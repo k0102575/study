@@ -1,0 +1,43 @@
+.App {
+  height: 100%;
+}
+
+.red {
+  background-color: lightpink;
+  height: 100vh;
+}
+
+.orange {
+  background-color: lightsalmon;
+  height: 100vh;
+}
+
+.yellow {
+  background-color: lightyellow;
+  height: 100vh;
+}
+
+.green {
+  background-color: lightgreen;
+  height: 100vh;
+}
+
+.blue {
+  background-color: lightblue;
+  height: 100vh;
+}
+
+.navy {
+  background-color: navy;
+  height: 100vh;
+}
+
+.purple {
+  background-color: purple;
+  height: 100vh;
+}
+
+.black {
+  background-color: black;
+  height: 100vh;
+}
