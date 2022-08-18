@@ -11,3 +11,5 @@ Learn, Grow
 - react query (Blaybus 팀원들 react-query tip 코워킹 대비)
 - Typescript-handbook (Typescript-handbook)
   - [reference](https://typescript-kr.github.io/)
+- web-animation-study(웹 개발 신입사원때 회사 홈페이지 프론트 개발 관련 애니메이션 스터디 자료)
+  - [homepage](https://www.triplllet.com/ko/)
