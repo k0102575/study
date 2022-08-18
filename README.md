@@ -4,6 +4,8 @@ Learn, Grow
 
 ### learningType
 
+- express-email (이메일 퍼블리싱 테스트를 위해 이메일 발송 express 프로젝트)
+
 - interview (신입 프론트엔드 개발자 기술 면접 대비 문제 준비)
 
 - java-paint (회사 스터디 자바로 그림판 프로그램 만들기)
