@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-for</title>
+</head>
+<body>
+
+<h2>기본 v-for</h2>
+<div id="app">
+    <h3>List of expensive experiments</h3>
+    <ul>
+        <li v-for="exp in experiments">
+            {{exp.name}} ({{exp.cost}}m 달러)
+        </li>
+    </ul>
+</div>
+
+<h2>v-for 배열 필터링</h2>
+<div id="app2">
+    <h3>List of expensive experiments</h3>
+    <ul>
+        <li v-for="exp in nonPhysics">
+            {{exp.name}} ({{exp.cost}}m 달러)
+        </li>
+    </ul>
+</div>
+
+<h2>input 박스 입력값 필터링</h2>
+<div id="app3">
+    <h4>List of expensive experiments</h3>
+    <ul>
+        <li v-for="exp in allExceptTerm">
+            {{exp.name}} ({{exp.cost}}m 달러)
+        </li>
+    </ul>
+    <input v-model="term">
+</div>
+
+<h3>필터 2개 걸어보기</h2>
+<div id="app4">
+    <h4>List of expensive experiments</h3>
+    <ul>
+        <li v-for="exp in nonPhysics(lowCost(experiments))">
+            {{exp.name}} ({{exp.cost}}m 달러)
+        </li>
+    </ul>
+</div>
+
+<h3>필터 2개를 캡슐화 하자</h2>
+<div id="app5">
+    <h4>List of expensive experiments</h3>
+    <ul>
+        <li v-for="exp in filteredExperiments">
+            {{exp.name}} ({{exp.cost}}m 달러)
+        </li>
+    </ul>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+<script>
+
+let experiments = [
+            {name: 'TEST1', cost: 650, field: 'Physics'},
+            {name: 'TEST2', cost: 100, field: 'Biology'},
+            {name: 'TEST3', cost: 3, field: 'Psychology'},
+            {name: 'TEST4', cost: 7700, field: 'Physics'},
+            {name: 'TEST5', cost: 0, field: 'Physics'}
+        ]
+
+new Vue({
+    el: "#app",
+    data: {
+        experiments: experiments
+    },
+})
+
+new Vue({
+    el: "#app2",
+    data: {
+        experiments: experiments
+    },
+    computed: {
+        nonPhysics () {
+            return this.experiments.filter(exp => exp.field !== 'Physics')
+        }
+    }
+})
+
+new Vue({
+    el: "#app3",
+    data: {
+        experiments: experiments,
+        term: ''
+    },
+    computed: {
+        allExceptTerm () {
+            return this.experiments.filter(exp => exp.name.indexOf(this.term) === -1)
+        }
+    }
+})
+
+new Vue({
+    el: "#app4",
+    data: {
+        experiments: experiments
+    },
+    methods: {
+        nonPhysics (list) {
+            return list.filter(exp => exp.field !== 'Physics')
+        },
+        lowCost (list) {
+            return list.filter(exp => exp.cost <= 3)
+        }
+    },
+})
+
+new Vue({
+    el: "#app5",
+    data: {
+        experiments: experiments
+    },
+    methods: {
+        nonPhysics (list) {
+            return list.filter(exp => exp.field !== 'Physics')
+        },
+        lowCost (list) {
+            return list.filter(exp => exp.cost <= 3)
+        }
+    },
+    computed: {
+        filteredExperiments () {
+            return this.lowCost(this.nonPhysics(this.experiments))
+        }
+    }
+})
+
+</script>
+</body>
+</html>

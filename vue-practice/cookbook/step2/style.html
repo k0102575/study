@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>조건부로 스타일 추가하기</title>
+</head>
+<style>
+    .warn {
+        background-color: mistyrose;
+    }
+</style>
+<body>
+
+<h2>허용되는 최대 문자수에 도달하면 경고를 출력하는 텍스트 영역을 작성한다.</h2>
+<div id="app">
+    <textarea
+        v-model="memeText"
+        :class="{ warn: longText}"
+        :maxlength="limit">
+    </textarea>
+    {{memeText.length}}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+<script>
+
+new Vue({
+    el: "#app",
+    data: {
+        memeText: 'What if I told you' + 
+                'CSS can do that',
+        limit: 50
+    },
+    computed: {
+        longText() {
+            if(this.limit - this.memeText.length <= 10) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+})
+
+</script>
+</body>
+</html>

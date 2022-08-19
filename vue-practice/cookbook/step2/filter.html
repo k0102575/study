@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>필터로 통화 서식 지정하기</title>
+</head>
+<style>
+.price {
+    text-align: right;
+}
+</style>
+<body>
+
+<h2>기본 필터 통화 서식</h2>
+<div id="app">
+    <span>I Have {{5 | currency}} in my pocket</span><br>
+    <span>I Have {{10 | currency}} in my pocket</span><br>
+    <span>I Have {{15 | currency}} in my pocket</span><br>
+    <span>I Have {{20 | currency}} in my pocket</span>
+</div>
+
+<h2>테이블 설정</h2>
+<div id="app2">
+    <table>
+        <thead>
+            <th>Item</th>
+            <th>Price</th>
+        </thead>
+        <tbody>
+            <tr v-for="item in inventory">
+                <td>{{item.name}}</td>
+                <td class="price">{{item.price | dollars}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/accounting.js/0.4.1/accounting.min.js" integrity="sha256-wLefPvftUZaYEQquDfRpnXG8nkR2o9vutAcDLNe64R0=" crossorigin="anonymous"></script>
+<script>
+
+Vue.filter('currency', (money) => {
+    return accounting.formatMoney(money)
+})
+
+new Vue({
+    el: "#app",
+})
+
+Vue.filter('dollars', (money) => {
+    return accounting.formatMoney(money)
+})
+
+
+new Vue({
+    el: "#app2",
+    data: {
+        inventory: [
+            {name: 'tape measure', price: '7'},
+            {name: 'stamp', price: '0.01'},
+            {name: 'shark tooth', price: '1.5'},
+            {name: 'iphone', price: '999'}
+        ]
+    }
+})
+</script>
+</body>
+</html>

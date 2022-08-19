@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>필터로 날짜 서식 지정하기</title>
+</head>
+<style>
+</style>
+<body>
+
+<h2>기본 날짜 서식</h2>
+<div id="app">
+    today is {{today}}
+</div>
+
+<h2>날짜 필터 추가하기</h2>
+<div id="app2">
+    today is {{today | dateFilter}}
+</div>
+
+<h2>날짜 서식 조건 추가하기</h2>
+<div id="app3">
+    today is {{today | dateFilter2('kr')}}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+<script>
+
+new Vue({
+    el: "#app",
+    data: {
+        today: new Date()
+    }
+})
+
+Vue.filter('dateFilter', (date) => {
+    return moment(date).format('LL')
+})
+
+new Vue({
+    el: "#app2",
+    data: {
+        today: new Date()
+    }
+})
+
+Vue.filter('dateFilter2', (date, locale) => {
+    moment.locale(locale)
+    return moment(date).format('LL')
+})
+
+new Vue({
+    el: "#app3",
+    data: {
+        today: new Date()
+    }
+})
+
+</script>
+</body>
+</html>

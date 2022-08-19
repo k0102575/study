@@ -1,0 +1,14 @@
+#app {
+  width: 100px;
+  margin: 10px;
+  background-color: lightBlue;
+}
+
+#app p {
+  background: lightGreen;
+}
+
+#app p:last-child {
+  background: lightYellow;
+}
+/*# sourceMappingURL=index.css.map */

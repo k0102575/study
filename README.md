@@ -19,6 +19,8 @@ Learn, Grow
 
 - Typescript-handbook (Typescript-handbook)
   - [reference](https://typescript-kr.github.io/)
+
+- vue-practice (doit vue.js 2 + vue.js 2 cookbook 도서 스터디)
   
 - web-animation-study(웹 개발 신입사원때 회사 홈페이지 프론트 개발 관련 애니메이션 스터디 자료)
   - [homepage](https://www.triplllet.com/ko/)

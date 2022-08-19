@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>조건부로 엘리먼트 표시 및 숨기기</title>
+</head>
+<style>
+</style>
+<body>
+
+<h2>v-show: 밤에만 보이는 유령을 표시하기</h2>
+<div id="app">
+    <div v-show="isNight">
+        I'm a ghost! Boo!
+    </div>
+</div>
+
+<h2>v-show: 실제 시간에 맞춰서 유령을 표시하기</h2>
+<div id="app2">
+    <div v-show="isNight">
+        I'm a ghost! Boo!
+    </div>
+</div>
+
+<h2>v-show: 임의의 시간을 설정해서 위의 조건에 맞게 유령을 표시하기</h2>
+<div id="app3">
+    <div v-show="isNight">
+        I'm a ghost! Boo!
+    </div>
+</div>
+
+<h2>v-if: 밤에만 보이는 유령을 표시하기</h2>
+<div id="app4">
+    <div v-if="isNight">
+        I'm a ghost! Boo!
+    </div>
+</div>
+
+<h2>v-if: 실제 시간에 맞춰서 유령을 표시하기</h2>
+<div id="app5">
+    <div v-if="isNight">
+        I'm a ghost! Boo!
+    </div>
+</div>
+
+<h2>v-if: 임의의 시간을 설정해서 위의 조건에 맞게 유령을 표시하기</h2>
+<div id="app6">
+    <div v-if="isNight">
+        I'm a ghost! Boo!
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+<script>
+
+new Vue({
+    el: "#app",
+    data: {
+        isNight: true
+    }
+})
+
+new Vue({
+    el: "#app2",
+    computed: {
+        isNight () {
+            return new Date().getHours() < 7
+        }
+    }
+})
+
+new Vue({
+    el: "#app3",
+    computed: {
+        isNight () {
+            return (new Date('4 January 03:30')).getHours() < 7
+        }
+    }
+})
+
+new Vue({
+    el: "#app4",
+    data: {
+        isNight: true
+    }
+})
+
+new Vue({
+    el: "#app5",
+    computed: {
+        isNight () {
+            return new Date().getHours() < 7
+        }
+    }
+})
+
+new Vue({
+    el: "#app6",
+    computed: {
+        isNight () {
+            return (new Date('4 January 03:30')).getHours() < 7
+        }
+    }
+})
+
+</script>
+</body>
+</html>

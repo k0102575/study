@@ -1,0 +1,17 @@
+$mainColor : lightBlue;
+$subColor: lightGreen;
+$lastColor : lightYellow;
+
+#app {
+    width: 100px;
+    margin: 10px;
+    background: $mainColor;
+
+    p {
+        background: $subColor;
+        &:last-child {
+            background: $lastColor
+        }
+    }
+    
+}

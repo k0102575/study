@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>v-for2</title>
+<style>
+.ascending:after {
+    content: "\25B2"
+}
+
+.descending:after {
+    content: "\25BC"
+}
+</style>
+</head>
+<body>
+
+<h2>기본 v-for</h2>
+<div id="app">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Conuntry</th>
+                <th>Electricity</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="dam in dams">
+                <td>{{dam.name}}</td>
+                <td>{{dam.country}}</td>
+                <td>{{dam.electricity}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2>전력 별로 sorting 해보자</h2>
+<div id="app2">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Conuntry</th>
+                <th>Electricity</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="dam in damByElectricity">
+                <td>{{dam.name}}</td>
+                <td>{{dam.country}}</td>
+                <td>{{dam.electricity}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2>sorting 클릭 이벤트를 설정해보자</h2>
+<div id="app3">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Conuntry</th>
+                <th v-bind:class="order === 1 ? 'descending' : 'ascending'" @click="sort">Electricity</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="dam in damByElectricity">
+                <td>{{dam.name}}</td>
+                <td>{{dam.country}}</td>
+                <td>{{dam.electricity}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+<script>
+
+new Vue({
+    el: "#app",
+    data: {
+        dams: [
+            {name: 'Nurek Dam', country: 'Tajikistan', electricity: 3200},
+            {name: 'Three Gorges Dam', country: 'china', electricity: 22500},
+            {name: 'Tarbela Dam', country: 'Pakistan', electricity: 3500},
+            {name: 'Guri Dam', country: 'Venezuela', electricity: 10200}
+        ]
+    }
+})
+
+new Vue({
+    el: "#app2",
+    data: {
+        dams: [
+            {name: 'Nurek Dam', country: 'Tajikistan', electricity: 3200},
+            {name: 'Three Gorges Dam', country: 'china', electricity: 22500},
+            {name: 'Tarbela Dam', country: 'Pakistan', electricity: 3500},
+            {name: 'Guri Dam', country: 'Venezuela', electricity: 10200}
+        ]
+    },
+    computed: {
+        damByElectricity () {
+            return this.dams.sort((d1, d2) => d2.electricity - d1.electricity)
+        }
+    }
+})
+
+new Vue({
+    el: "#app3",
+    data: {
+        dams: [
+            {name: 'Nurek Dam', country: 'Tajikistan', electricity: 3200},
+            {name: 'Three Gorges Dam', country: 'china', electricity: 22500},
+            {name: 'Tarbela Dam', country: 'Pakistan', electricity: 3500},
+            {name: 'Guri Dam', country: 'Venezuela', electricity: 10200}
+        ],
+        order: 1
+    },
+    methods: {
+        sort() {
+            this.order = this.order * -1
+        }
+    },
+    computed: {
+        damByElectricity () {
+            return this.dams.sort((d1, d2) => (d2.electricity - d1.electricity) * this.order)
+        }
+    }
+})
+
+</script>
+</body>
+</html>
