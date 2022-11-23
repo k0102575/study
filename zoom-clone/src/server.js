@@ -12,12 +12,12 @@ app.set('view engine', 'ejs');
 app.engine('html', ejs.renderFile);
 app.set('views', __dirname + '/views');
 
+// static file Setting
+app.use('/public', express.static(__dirname + '/public'));
+
 // Route Setting
 app.get('/', (req, res) => res.render('index'));
 app.get('/*', (req, res) => res.redirect('/'));
-
-// static file Setting
-app.use('/public', express.static(__dirname + '/public'));
 
 // callback
 const handleListen = () => {
@@ -30,5 +30,9 @@ const handleListen = () => {
 // Web socket server start
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (socket) => {
+  console.log(socket);
+});
 
 server.listen(PORT_NUMBER, handleListen);

@@ -1,1 +1,1 @@
-console.log('Hello World');
+const socket = new WebSocket(`ws://${window.location.host}`);
