@@ -28,8 +28,14 @@ server.listen(PORT_NUMBER, () => {
 // Web socket server start
 const wss = new WebSocket.Server({ server });
 
+// fake database
+const sockets = [];
+
 // Web socket event hander
 wss.on('connection', (socket) => {
+  sockets.push(socket);
+  socket['nickname'] = 'Anon';
+
   // Web socket connection event
   console.log('클라이언트와 연결 되었습니다. ✅');
 
@@ -40,9 +46,18 @@ wss.on('connection', (socket) => {
 
   // Web socket receive message event
   socket.on('message', (message) => {
-    console.log(`클라이언트 온 새로운 메시지 : ${message}`);
-  });
+    const { type, payload } = JSON.parse(message);
 
-  // Web socket send message event
-  socket.send('안녕 클라이언트야 😀');
+    switch (type) {
+      case 'new_message':
+        sockets.forEach((_socket) => {
+          _socket.send(`${socket.nickname} : ${payload}`);
+        });
+        break;
+
+      case 'nickname':
+        socket['nickname'] = payload;
+        break;
+    }
+  });
 });
