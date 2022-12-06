@@ -12,17 +12,28 @@
       <h2>Zoom Clone Coding</h2>
     </header>
     <main>
-      <form id="nicknameForm">
-        <input type="text" placeholder="닉네임" />
-        <button>저장</button>
-      </form>
-      <ul></ul>
-      <form id="messageForm">
-        <input type="text" placeholder="새로운 메시지" />
-        <button>보내기</button>
-      </form>
+      <div id="welcome">
+        <form>
+          <input type="text" placeholder="방 이름" />
+          <button>방 입장</button>
+        </form>
+        <h4>방 이름 들:</h4>
+        <ul></ul>
+      </div>
+      <div id="room">
+        <h3></h3>
+        <ul></ul>
+        <form id="nickname">
+          <input type="text" placeholder="닉네임" />
+          <button>설정</button>
+        </form>
+        <form id="msg">
+          <input type="text" placeholder="메시지" />
+          <button>보내기</button>
+        </form>
+      </div>
     </main>
-    <button type="button">Call</button>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/public/js/app.js"></script>
   </body>
 </html>
