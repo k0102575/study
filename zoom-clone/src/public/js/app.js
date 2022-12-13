@@ -1,90 +1,172 @@
 const socket = io();
+
+const myVideo = document.getElementById('myVideo');
+const muteBtn = document.getElementById('mute');
+const cameraBtn = document.getElementById('camera');
+const camerasSelect = document.getElementById('cameras');
 const welcome = document.getElementById('welcome');
-const form = welcome.querySelector('form');
-const room = document.getElementById('room');
+const welcomeForm = welcome.querySelector('form');
+const call = document.getElementById('call');
+const peersStream = document.getElementById('peersStream');
+
+let myStream;
+let isMuted = false;
+let isCamera = false;
 let roomName;
+let myPeerConnection;
 
 // IIFE
 (function () {
-  room.hidden = true;
+  call.hidden = true;
 })();
 
-// message handler
-const addMessage = (msg) => {
-  const ul = room.querySelector('ul');
-  const li = document.createElement('li');
+// 카메라 정보 가져오는 함수
+const getCameras = async () => {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const cameras = devices.filter((device) => device.kind === 'videoinput');
+    const currentCamera = myStream.getVideoTracks()[0];
 
-  console.log(msg);
-  li.innerText = msg;
-  ul.appendChild(li);
+    cameras.forEach((camera) => {
+      const option = document.createElement('option');
+      option.value = camera.deviceId;
+      option.innerText = camera.label;
+      if (currentCamera.label === camera.label) {
+        option.selected = true;
+      }
+      camerasSelect.appendChild(option);
+    });
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-// welcome form submit event handler
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
+// 미디어 정보 가져오는 함수
+const getMedia = async (deviceId) => {
+  const initConstrains = {
+    audio: true,
+    video: { facingMode: 'user' },
+  };
 
-  const input = form.querySelector('input');
+  const cameraConstrains = {
+    audio: true,
+    video: { deviceId: { exact: deviceId } },
+  };
+  try {
+    myStream = await navigator.mediaDevices.getUserMedia(
+      deviceId ? cameraConstrains : initConstrains
+    );
 
-  socket.emit('enter_room', input.value, () => {
-    welcome.hidden = true;
-    room.hidden = false;
+    myVideo.srcObject = myStream;
 
-    const h3 = room.querySelector('h3');
+    if (!deviceId) {
+      await getCameras();
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
 
-    h3.innerText = `${roomName}`;
-
-    // 메시지 보내기 폼 submit 이벤트
-    const msgForm = room.querySelector('#msg');
-    msgForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const input = room.querySelector('#msg input');
-      const value = input.value;
-      socket.emit('new_message', input.value, roomName, () => {
-        addMessage(`나 : ${value}`);
-      });
-      input.value = '';
-    });
-
-    // 닉네임 폼 submit 이벤트
-    const nicknameForm = room.querySelector('#nickname');
-    nicknameForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const input = room.querySelector('#nickname input');
-      socket.emit('nickname', input.value);
-    });
+// connection 연결 함수
+const makeConnection = () => {
+  myPeerConnection = new RTCPeerConnection({
+    iceServers: [
+      {
+        urls: [
+          'stun:stun.l.google.com:19302',
+          'stun:stun1.l.google.com:19302',
+          'stun:stun2.l.google.com:19302',
+          'stun:stun3.l.google.com:19302',
+          'stun:stun4.l.google.com:19302',
+        ],
+      },
+    ],
   });
 
+  myPeerConnection.addEventListener('icecandidate', (data) => {
+    socket.emit('ice', data.candidate, roomName);
+  });
+
+  myPeerConnection.addEventListener('track', (data) => {
+    peersStream.srcObject = data.streams[0];
+  });
+
+  myStream.getTracks().forEach((track) => {
+    myPeerConnection.addTrack(track, myStream);
+  });
+};
+
+const initCall = async () => {
+  call.hidden = false;
+  welcome.hidden = true;
+  await getMedia();
+  makeConnection();
+};
+
+// 소리 버튼 클릭 이벤트
+muteBtn.addEventListener('click', () => {
+  myStream
+    .getAudioTracks()
+    .forEach((track) => (track.enabled = !track.enabled));
+
+  isMuted = !isMuted;
+  muteBtn.innerText = `소리 ${isMuted ? 'ON' : 'OFF'}`;
+});
+
+// 카메라 버튼 클릭 이벤트
+cameraBtn.addEventListener('click', () => {
+  myStream
+    .getVideoTracks()
+    .forEach((track) => (track.enabled = !track.enabled));
+
+  isCamera = !isCamera;
+  cameraBtn.innerText = `카메라 ${isCamera ? 'ON' : 'OFF'}`;
+});
+
+camerasSelect.addEventListener('input', async () => {
+  await getMedia(camerasSelect.value);
+
+  if (myPeerConnection) {
+    const videoTrack = myStream.getVideoTracks()[0];
+    const videoSender = myPeerConnection
+      .getSenders()
+      .find((sender) => sender.track.kind === 'video');
+    videoSender.replaceTrack(videoTrack);
+  }
+});
+
+// 방 입장 form submit 이벤트 리스너
+welcomeForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const input = welcomeForm.querySelector('input');
   roomName = input.value;
 
+  await initCall();
+  socket.emit('join_room', input.value);
   input.value = '';
 });
 
-socket.on('welcome', (user, userCount) => {
-  const h3 = room.querySelector('h3');
-  h3.innerText = `방 ${roomName} 사람수 ${userCount}`;
+socket.on('welcome', async () => {
+  const offer = await myPeerConnection.createOffer();
 
-  addMessage(`${user} joined!`);
+  myPeerConnection.setLocalDescription(offer);
+
+  socket.emit('offer', offer, roomName);
 });
 
-socket.on('bye', (user, userCount) => {
-  const h3 = room.querySelector('h3');
-  h3.innerText = `방 ${roomName} 사람수 ${userCount}`;
+socket.on('offer', async (offer) => {
+  myPeerConnection.setRemoteDescription(offer);
+  const answer = await myPeerConnection.createAnswer();
 
-  addMessage(`${user} left!`);
+  myPeerConnection.setLocalDescription(answer);
+
+  socket.emit('answer', answer, roomName);
 });
 
-socket.on('new_message', addMessage);
+socket.on('answer', async (answer) => {
+  myPeerConnection.setRemoteDescription(answer);
+});
 
-socket.on('room_change', (rooms) => {
-  const roomList = welcome.querySelector('ul');
-  roomList.innerHTML = '';
-
-  if (rooms.length) {
-    rooms.forEach((room) => {
-      const li = document.createElement('li');
-      li.innerText = room;
-      roomList.appendChild(li);
-    });
-    return;
-  }
+socket.on('ice', (ice) => {
+  myPeerConnection.addIceCandidate(ice);
 });

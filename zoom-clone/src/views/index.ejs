@@ -14,23 +14,30 @@
     <main>
       <div id="welcome">
         <form>
-          <input type="text" placeholder="방 이름" />
-          <button>방 입장</button>
+          <input text="text" placeholder="방 이름" />
+          <button>Enter room</button>
         </form>
-        <h4>방 이름 들:</h4>
-        <ul></ul>
       </div>
-      <div id="room">
-        <h3></h3>
-        <ul></ul>
-        <form id="nickname">
-          <input type="text" placeholder="닉네임" />
-          <button>설정</button>
-        </form>
-        <form id="msg">
-          <input type="text" placeholder="메시지" />
-          <button>보내기</button>
-        </form>
+      <div id="call">
+        <div id="myStream">
+          <video
+            id="myVideo"
+            autoplay
+            playsinline
+            width="400"
+            height="400"
+          ></video>
+          <button id="mute">소리 OFF</button>
+          <button id="camera">카메라 OFF</button>
+          <select id="cameras"></select>
+          <video
+            id="peersStream"
+            autoplay
+            playsinline
+            width="400"
+            height="400"
+          ></video>
+        </div>
       </div>
     </main>
     <script src="/socket.io/socket.io.js"></script>
