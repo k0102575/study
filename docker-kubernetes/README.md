@@ -5,9 +5,16 @@
 
 ---
 
-## 진행 스텝
+## 2단계: 도커 적용 후 실행 방법
 
-### 1. 도커 적용 전
-
-- 로컬에서 직접 backend(Express), frontend(React) 각각 실행
-- 환경변수(.env)로 API 주소 관리
+1. backend 이미지 빌드 및 컨테이너 실행
+   ```bash
+   docker build -t todo-backend ./backend      # backend 폴더에서 Docker 이미지를 빌드 (이름: todo-backend)
+   docker run -d --name todo-backend -p 3000:3000 todo-backend   # todo-backend 이미지를 3000번 포트로 컨테이너 실행
+   ```
+2. frontend 이미지 빌드 및 컨테이너 실행
+   ```bash
+   docker build -t todo-frontend ./frontend    # frontend 폴더에서 Docker 이미지를 빌드 (이름: todo-frontend)
+   docker run -d --name todo-frontend -p 80:80 todo-frontend     # todo-frontend 이미지를 80번 포트로 컨테이너 실행
+   ```
+3. 브라우저에서 `http://localhost`로 접속하여 TODO 앱 확인
