@@ -1,0 +1,34 @@
+version: '3.8' # docker-compose 파일 버전
+services:
+  backend:
+    build:
+      context: ./backend # backend Dockerfile 위치
+      target: dev        # backend Dockerfile의 dev 스테이지(핫리로드) 사용
+    container_name: todo-backend # 컨테이너 이름 지정
+    ports:
+      - "3000:3000"     # 호스트:컨테이너 포트 매핑
+    volumes:
+      - ./backend:/app   # 로컬 backend 소스코드를 컨테이너에 마운트(핫리로드)
+      - /app/node_modules   # 익명 볼륨: 컨테이너 내부 node_modules 유지
+    networks:
+      - todo-net         # todo-net 네트워크에 연결
+  frontend:
+    build:
+      context: ./frontend    # frontend Dockerfile 위치
+      target: dev            # frontend Dockerfile의 dev 스테이지(핫리로드) 사용
+    container_name: todo-frontend # 컨테이너 이름 지정
+    ports:
+      - "80:80"         # 호스트:컨테이너 포트 매핑
+    environment:
+      - REACT_APP_API_URL=http://localhost:3000 # 브라우저에서 API 요청시 localhost 사용
+    volumes:
+      - ./frontend:/app  # 로컬 frontend 소스코드를 컨테이너에 마운트(핫리로드)
+      - /app/node_modules # node_modules는 컨테이너 내부 것 사용
+    command: npm start   # 개발 서버(npm start)로 실행
+    depends_on:
+      - backend          # backend가 먼저 실행되어야 함
+    networks:
+      - todo-net         # todo-net 네트워크에 연결
+networks:
+  todo-net:
+    driver: bridge       # 브릿지 네트워크 사용 
